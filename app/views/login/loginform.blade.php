@@ -1,24 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>{{ $title }}</title>
-	{{ HTML::style('/css/bootstrap.min.css') }}
-	{{ HTML::style('/css/bootstrap-theme.css') }}
-</head>
-<body>
+@extends('layouts.default')
 	
-	<div id="nav">
-		<div class="navbar navbar-inverse">
-			<a href="" class="navbar-brand">Movie</a>
-		</div><!-- end navbar div -->
-	</div> <!-- end nav div -->
-	@if(Session::has('message'))
-		<center>{{ Session::get('message') }}</center>
-		<br><br>
-	@endif
-
+	
+@section('content')
 	<h2 style="text-align:center;">Login</h2>
 	<br><br>
 
@@ -52,9 +35,4 @@
 			</form>
 		</div>
 	</center>
-	<!-- javascript files required for page -->
-
-	<script src="/js/bootstrap.min.js"></script>
-	<script src="/js/jquery.min.js"></script>
-</body>
-</html>
+@stop

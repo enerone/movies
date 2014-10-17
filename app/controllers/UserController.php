@@ -42,6 +42,63 @@ class UserController extends \BaseController {
 
 
 	/**
+	 * Display listing of the resource	 
+	 * @param  int $userid
+	 * @return  Response
+	 */
+	//this action grabs the user info and displays it in the edit profile menu. Controls data sent to user profile model
+	public function show($userid){
+		// Grab currently loggd on user record
+		$user = DB::table('users')
+			->where('id', '=', Auth::user()->id)
+			->get(array('givenname','surname','username', 'email','password'));
+
+		//return to the modal view
+		return View::make('user.modals.profile-edit')
+			->with('user',$user);
+	} //end show function
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function store()
+	{
+		$userdata = array(
+			'id'=>Input::get('id'),
+			'givenname'=>Input::get('givenname'),
+			'surname'=>Input::get('surname'),
+			'email'=>Input::get('email'),
+			'password'=>Input::get('password')
+			);
+
+			if($userdata['password'] != Input::get('password_confirmation')){
+				return Redirect::route('home')->with('message', FlashMessage::DisplayAlert('New password does not match the confirmation!','danger'));	
+			} 
+
+			$user = UserModel::find($userdata['id']);
+
+			if($userdata['password'] != $user->password){
+				$userdata['password'] = Hash::make(Input::get('password'));
+			}
+
+			$user->givenname = $userdata['givenname'];
+			$user->surname = $userdata['surname'];
+			$user->email = $userdata['email'];
+			$user->password = $userdata['password'];
+			
+			if($user->save()){
+				return Redirect::route('home')->with('message', FlashMessage::DisplayAlert('Profile updated succesfully', 'success'));
+			}else{
+				return Redirect::route('home')->withInput()->withErrors($userdata->errors);
+			}	
+
+
+
+	} // end store method
+
+	/**
 	 * signup registro de usuarios
 	 * @return redirect
 	 */
@@ -192,28 +249,10 @@ class UserController extends \BaseController {
 	}
 
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
+	
 
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
+	
 
 	/**
 	 * Show the form for editing the specified resource.
